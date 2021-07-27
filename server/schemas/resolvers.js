@@ -27,7 +27,7 @@ const resolvers = {
             const user = await User.findOne({ email });
 
             if (!user) {
-                throw new AuthenticationError('No user exists for this e-mail address, did you mean to login?');
+                throw new AuthenticationError('No user exists for this e-mail address, did you mean to register?');
             }
 
             const passwordCheck = await user.isCorrectPassword(password);
@@ -41,11 +41,25 @@ const resolvers = {
             return { token, user };
         },
         // probably need to use Context here...
-        saveBook: async (parent, args) => {
-
+        saveBook: async (parent, { body }, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $addToSet: { savedBooks: body } },
+                    { new: true, runValidators: true }
+                );
+            }
+            throw new AuthenticationError('You need to be logged in to save a book!');
         },
-        deleteBook: async (parent, args) => {
-
+        deleteBook: async (parent, { params }, context) => {
+            if (context.user) {
+                return User.findOneAndUpdate(
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId: params.bookId } } },
+                    { new: true }
+                );
+            }
+            throw new AuthenticationError('You need to be logged in to perform that action!');
         }
     }
 }
