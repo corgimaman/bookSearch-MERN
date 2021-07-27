@@ -23,7 +23,7 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
-        login: async (parent, { email, password }) => {
+        loginUser: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
 
             if (!user) {
@@ -51,7 +51,7 @@ const resolvers = {
             }
             throw new AuthenticationError('You need to be logged in to save a book!');
         },
-        deleteBook: async (parent, { params }, context) => {
+        removeBook: async (parent, { params }, context) => {
             if (context.user) {
                 return User.findOneAndUpdate(
                     { _id: context.user._id },
