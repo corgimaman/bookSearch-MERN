@@ -3,11 +3,11 @@ const { Book, User } = require('../models');
 const { signToken } = require('../utils/auth'); 
 
 const resolvers = {
-    Query: {
+    Query: {/*
         users: async () => {
             return User.find().populate('savedBooks');
         },
-        user: async (oarent, { username }) => {
+        user: async (parent, { username }) => {
             return User.findOne({ username }).populate('savedBooks');
         },
         books: async () => {
@@ -15,6 +15,15 @@ const resolvers = {
         },
         book: async () => {
             return Book.find
+        }
+        me: async (parent, { username }) => {
+            return User.findOne({ username })
+        }*/
+        me: async (parent, args, context) => {
+            if (context.user) {
+                return User.findOne({ _id: context.user._id }).populate('savedBooks');
+            }
+            throw new AuthenticationError('Cannot find user with that id!');
         }
     },
     Mutation: {
@@ -40,7 +49,6 @@ const resolvers = {
 
             return { token, user };
         },
-        // probably need to use Context here...
         saveBook: async (parent, { body }, context) => {
             if (context.user) {
                 return User.findOneAndUpdate(
