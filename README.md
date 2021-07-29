@@ -5,6 +5,7 @@ This is a full-stack MERN application that allows you to create a login account 
 ## Table of Contents
 * [Installation Guide](#Installation)
 * [How to Use](#Usage)
+* [App History](#History)
 * [License](#License)
 * [Contact Info](#Contact)
 
@@ -18,6 +19,10 @@ If you create an account, you'll have an authorized token and be able to see the
 ![save](./assets/save-demo.gif)
 You can navigate to your saved books using the link in the Nav bar, and remove books you no longer want to keep as part of your collection.
 ![savedBooks](./assets/saved-demo.gif)
+
+## History
+
+This application was a working RESTful API that was refactored into a GraphQL API built with Apollo server. The REST API was replaced with Apollo Server GraphQL queries and mutations to fetch and modify data. The authentication middleware was adjusted to work in context of the GraphQL API. An Apollo Provider was created, so the requests would communicate with the Apollo Server.
 
 ## License
 This project is licensed under the MIT license.
