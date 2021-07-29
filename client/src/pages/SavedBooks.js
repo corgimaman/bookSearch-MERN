@@ -5,8 +5,13 @@ import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
+import { useQuery, useMutation } from '@apollo/client';
+import { REMOVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
+
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  const { loading, userData } = useQuery(GET_ME);
+  /*const [userData, setUserData] = useState({});
 
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
@@ -34,9 +39,11 @@ const SavedBooks = () => {
     };
 
     getUserData();
-  }, [userDataLength]);
+  }, [userDataLength]);*/
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
+
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
@@ -45,6 +52,7 @@ const SavedBooks = () => {
     }
 
     try {
+      /*
       const response = await deleteBook(bookId, token);
 
       if (!response.ok) {
@@ -52,7 +60,12 @@ const SavedBooks = () => {
       }
 
       const updatedUser = await response.json();
-      setUserData(updatedUser);
+      setUserData(updatedUser); */
+      const { data } = await removeBook({
+        variables: { bookId },
+      });
+
+
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -61,7 +74,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
