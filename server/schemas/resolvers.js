@@ -50,11 +50,12 @@ const resolvers = {
             return { token, user };
         },
         saveBook: async (parent, { bookWeRAdding }, context) => {
+            const book = { ...bookWeRAdding }
             console.log('context!!!!!', context)
             if (context.user) {
                 return User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: bookWeRAdding } },
+                    { $push: { savedBooks: book } },
                     { new: true, runValidators: true }
                 );
             }
